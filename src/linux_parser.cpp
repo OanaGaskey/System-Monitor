@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 
@@ -85,20 +86,57 @@ long int LinuxParser::UpTime() {
 }
 
 // TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies() { 
+  long total_jiffies{0};
+  total_jiffies = ActiveJiffies() + IdleJiffies();
+  return total_jiffies;
+}
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
 // TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() { 
+  long active_jiffies{0};
+  vector<string> cpu_utilization = CpuUtilization();
+
+  active_jiffies = std::stol(cpu_utilization[kUser_]) + 
+    			   std::stol(cpu_utilization[kNice_]) +
+       			   std::stol(cpu_utilization[kSystem_]) +
+       			   std::stol(cpu_utilization[kIRQ_]) +
+       			   std::stol(cpu_utilization[kSoftIRQ_]) +
+        		   std::stol(cpu_utilization[kSteal_]);
+  return active_jiffies;
+}
 
 // TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() { 
+  long idle_jiffies{0};
+  vector<string> cpu_utilization = CpuUtilization();
+  idle_jiffies = std::stol(cpu_utilization[kIdle_]) + std::stol(cpu_utilization[kIOwait_]);
+  return idle_jiffies;
+}
 
 // TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() { 
+  string line;
+  string jiffie;
+  vector<string> jiffies{};
+  
+  std::ifstream filestream(kProcDirectory + kStatFilename);
+  if (filestream.is_open()) {
+    std::getline(filestream, line);
+    std::istringstream linestream(line);
+    //stream the first string "cpu" and do nothing with it
+    linestream >> jiffie;
+    //stream the rest of the line until its end
+    while(linestream >> jiffie){ jiffies.push_back(jiffie); }
+//     std::cout<<"CPU file read with jiffies: "<<jiffies.size()<<std::endl;
+//     for (auto s : jiffies){std::cout<<s<<std::endl;}
+  }
+  return jiffies;
+}
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
