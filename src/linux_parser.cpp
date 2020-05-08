@@ -206,7 +206,7 @@ string LinuxParser::Uid(int pid) {
   string line;
   string key;
   string value{};
-  std::ifstream filestream(kProcDirectory + "/" + std::to_string(pid) +"/status");
+  std::ifstream filestream(kProcDirectory + "/" + to_string(pid) +"/status");
   if(filestream.is_open()){
     while(std::getline(filestream, line)){
       std::istringstream linestream(line);
@@ -219,8 +219,21 @@ string LinuxParser::Uid(int pid) {
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid[[maybe_unused]]) { 
-
+string LinuxParser::User(int pid) { 
+  string line;
+  string user{};
+  string x;
+  string s_pid;
+  std::ifstream filestream(kPasswordPath);
+  if(filestream.is_open()){
+    while(std::getline(filestream,line)){
+      std::istringstream linestream(line);
+      std::replace(line.begin(), line.end(), ':', ' ');
+      linestream >> user >> x >> s_pid;
+      if (std::stoi(s_pid) == pid) { return user; }
+    }
+  }
+  return user;
 }
 
 // TODO: Read and return the uptime of a process
