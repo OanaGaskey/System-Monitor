@@ -29,10 +29,11 @@ vector<Process>& System::Processes() {
   vector<int> current_proceses_ids = LinuxParser::Pids();
   vector<Process> current_processes{};
   
-  std::cout<<"current processes ids are ";
-  for (auto x : current_proceses_ids) { 
+  //std::cout<<"current processes ids are ";
+  for (int x : current_proceses_ids) { 
     //std::cout<<x<<" ";
     Process current(x);
+    //std::cout<<current.Pid();
     current_processes.push_back(current);
   }
   processes_ = std::move(current_processes);
