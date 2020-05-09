@@ -18,16 +18,16 @@ int Process::Pid() { return pid_; }
 float Process::CpuUtilization() { return 0; }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return LinuxParser::Command(0);}//string(); }
+string Process::Command() { return LinuxParser::Command(pid_);}//string(); }
 
 // TODO: Return this process's memory utilization
-string Process::Ram() { return LinuxParser::Ram(0);}//string(); }
+string Process::Ram() { return LinuxParser::Ram(pid_);}//string(); }
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return  LinuxParser::User(0);}//string(); }
+string Process::User() { return  LinuxParser::User(pid_);}//string(); }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(0);}//0; }
+long int Process::UpTime() { return LinuxParser::UpTime(pid_);}//0; }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
