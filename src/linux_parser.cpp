@@ -194,7 +194,7 @@ int LinuxParser::RunningProcesses() {
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Command(int pid) { 
+string LinuxParser::Command(int pid = 0) { 
   string line{};
   std::ifstream filestream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
   if(filestream.is_open()) {std::getline(filestream, line); }
@@ -203,7 +203,7 @@ string LinuxParser::Command(int pid) {
 
 // TODO: Read and return the memory used by a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Ram(int pid) {  
+string LinuxParser::Ram(int pid = 0) {  
   string line;
   string key;
   string value{};
@@ -220,7 +220,7 @@ string LinuxParser::Ram(int pid) {
 
 // TODO: Read and return the user ID associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::Uid(int pid) { 
+string LinuxParser::Uid(int pid = 0) { 
   string line;
   string key;
   string value{};
@@ -237,7 +237,7 @@ string LinuxParser::Uid(int pid) {
 
 // TODO: Read and return the user associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
-string LinuxParser::User(int pid) { 
+string LinuxParser::User(int pid = 0) { 
   string line;
   string user{};
   string x;
@@ -245,10 +245,10 @@ string LinuxParser::User(int pid) {
   std::ifstream filestream(kPasswordPath);
   if(filestream.is_open()){
     while(std::getline(filestream,line)){
-      std::istringstream linestream(line);
       std::replace(line.begin(), line.end(), ':', ' ');
+      std::istringstream linestream(line);
       linestream >> user >> x >> s_pid;
-      if (std::stoi(s_pid) == pid) { return user; }
+      if (s_pid == Uid(0)) { return user; }
     }
   }
   return user;
@@ -256,7 +256,7 @@ string LinuxParser::User(int pid) {
 
 // TODO: Read and return the uptime of a process
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::UpTime(int pid) { 
+long LinuxParser::UpTime(int pid = 0) { 
   string line;
   string s_value;
   long value{0};
