@@ -158,6 +158,23 @@ vector<string> LinuxParser::CpuUtilization() {
   return jiffies;
 }
 
+//CPU utilization for a specific process
+vector<string> LinuxParser::CpuUtilization(int pid) { 
+  string line;
+  string jiffie;
+  vector<string> jiffies{};
+  
+  std::ifstream filestream(kProcDirectory + to_string(pid) + kStatFilename);
+  if (filestream.is_open()) {
+    std::getline(filestream, line);
+    std::istringstream linestream(line);
+    
+    //stream the the line until its end
+    while(linestream >> jiffie){ jiffies.push_back(jiffie); }
+  }
+  return jiffies;
+}
+
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { 
   string line;
@@ -266,7 +283,6 @@ long LinuxParser::UpTime(int pid) {
     std::istringstream linestream(line);
     for (int i = 1; i<=22; ++i){ linestream >> s_value;}
     value = std::stol(s_value)/sysconf(_SC_CLK_TCK);
-    //std::cout<<"uptime = "<< value <<std::endl;
   }
   return value; 
 }
