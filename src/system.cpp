@@ -25,12 +25,17 @@ System::System(){
 Processor& System::Cpu() { return cpu_; }
 
 // TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { //return processes_; }
+vector<Process>& System::Processes() { 
   vector<int> current_proceses_ids = LinuxParser::Pids();
-  std::cout<<"current processes ids are ";
-  for (auto x : current_proceses_ids) { std::cout<<x<<" "; }
-  std::cout<<std::endl;
   vector<Process> current_processes{};
+  
+  std::cout<<"current processes ids are ";
+  for (auto x : current_proceses_ids) { 
+    //std::cout<<x<<" ";
+    Process current(x);
+    current_processes.push_back(current);
+  }
+  processes_ = std::move(current_processes);
   return processes_;
 
 }
