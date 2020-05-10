@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "process.h"
 #include "processor.h"
@@ -24,6 +25,10 @@ System::System(){
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
+
+bool compareProcesses(Process& p1, Process& p2) {
+  return (p1.CpuUtilization() > p2.CpuUtilization());
+};
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { 
   vector<int> current_proceses_ids = LinuxParser::Pids();
@@ -36,6 +41,7 @@ vector<Process>& System::Processes() {
     //std::cout<<current.Pid();
     current_processes.push_back(current);
   }
+  std::sort(current_processes.begin(), current_processes.end(), compareProcesses);
   processes_ = std::move(current_processes);
   return processes_;
 
