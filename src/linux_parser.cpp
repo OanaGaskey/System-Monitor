@@ -13,7 +13,7 @@ using std::vector;
 
 //define helper function that opens proc folder and finds given key associated value in given file
 template <typename T>
-T LinuxParser::GetValueByKey(string file, string key){
+T LinuxParser::GetValueByKey(const string& file, const string& key){
   string line;
   string stream_key;
   T value;
@@ -194,38 +194,10 @@ vector<string> LinuxParser::CpuUtilization(int pid) {
 }
 
 // TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { 
-  string line;
-  string key;
-  string value;
-  int nb_proc = GetValueByKey(kStatFilename, "processes");
-//   std::ifstream filestream(kProcDirectory + kStatFilename);
-//   if (filestream.is_open()) {
-//     while (std::getline(filestream, line)) {
-//       std::istringstream linestream(line);
-//       linestream >> key >> value;
-//       if (key == "processes") { nb_proc = std::stoi(value); }
-//     }
-//   }
-  return nb_proc;
-}
+int LinuxParser::TotalProcesses() { return GetValueByKey<int>(kStatFilename, "processes"); }
 
 // TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { 
-  string line;
-  string key;
-  string value;
-  int nb_proc {-1};
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-      linestream >> key >> value;
-      if (key == "procs_running") { nb_proc = std::stoi(value); }
-    }
-  }
-  return nb_proc;
-}
+int LinuxParser::RunningProcesses() { return GetValueByKey<int>(kStatFilename, "procs_running"); }
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function

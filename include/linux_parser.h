@@ -20,7 +20,7 @@ const std::string kPasswordPath{"/etc/passwd"};
 
 // System
 template <typename T>
-T GetValueByKey(std::string file, std::string key);
+T GetValueByKey(const std::string& file, const std::string& key);
 float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();
