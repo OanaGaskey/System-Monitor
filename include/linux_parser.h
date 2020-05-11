@@ -19,6 +19,8 @@ const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
 // System
+template <typename T>
+T GetValueByKey(std::string file, std::string key);
 float MemoryUtilization();
 long UpTime();
 std::vector<int> Pids();

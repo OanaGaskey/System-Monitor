@@ -11,6 +11,24 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+//define helper function that opens proc folder and finds given key associated value in given file
+template <typename T>
+T LinuxParser::GetValueByKey(string file, string key){
+  string line;
+  string stream_key;
+  T value;
+  
+  std::ifstream filestream(kProcDirectory+file);
+  if (filestream.is_open()){
+    while(std::getline(filestream, line)){
+      std::istringstream linestream(line);
+      linestream >> stream_key >> value;
+      if (stream_key == key) { return value; }
+    }
+  }
+  return value;
+}
+
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
@@ -180,15 +198,15 @@ int LinuxParser::TotalProcesses() {
   string line;
   string key;
   string value;
-  int nb_proc {-1};
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-  if (filestream.is_open()) {
-    while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
-      linestream >> key >> value;
-      if (key == "processes") { nb_proc = std::stoi(value); }
-    }
-  }
+  int nb_proc = GetValueByKey(kStatFilename, "processes");
+//   std::ifstream filestream(kProcDirectory + kStatFilename);
+//   if (filestream.is_open()) {
+//     while (std::getline(filestream, line)) {
+//       std::istringstream linestream(line);
+//       linestream >> key >> value;
+//       if (key == "processes") { nb_proc = std::stoi(value); }
+//     }
+//   }
   return nb_proc;
 }
 
