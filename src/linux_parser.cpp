@@ -23,8 +23,12 @@ T LinuxParser::GetValueByKey(const string& file, const string& key){
     while(std::getline(filestream, line)){
       std::istringstream linestream(line);
       linestream >> stream_key >> value;
-      if (stream_key == key) { return value; }
+      if (stream_key == key) { 
+        filestream.close();
+        return value; 
+      }
     }
+    filestream.close();
   }
   return value;
 }
@@ -44,10 +48,12 @@ string LinuxParser::OperatingSystem() {
       while (linestream >> key >> value) {
         if (key == "PRETTY_NAME") {
           std::replace(value.begin(), value.end(), '_', ' ');
+          filestream.close();
           return value;
         }
       }
     }
+    filestream.close();
   }
   return value;
 }
@@ -62,6 +68,7 @@ string LinuxParser::Kernel() {
     std::istringstream linestream(line);
     linestream >> os >> version >> kernel;
   }
+  stream.close();
   return version+" "+kernel;
 }
 
@@ -106,6 +113,7 @@ long int LinuxParser::UpTime() {
     linestream >> value;
     up_time = std::stol(value);
   }
+  filestream.close();
   return up_time;
 }
 
@@ -159,6 +167,7 @@ vector<string> LinuxParser::CpuUtilization() {
 //     std::cout<<"CPU file read with jiffies: "<<jiffies.size()<<std::endl;
 //     for (auto s : jiffies){std::cout<<s<<std::endl;}
   }
+  filestream.close();
   return jiffies;
 }
 
@@ -176,6 +185,7 @@ vector<string> LinuxParser::CpuUtilization(int pid) {
     //stream the the line until its end
     while(linestream >> jiffie){ jiffies.push_back(jiffie); }
   }
+  filestream.close();
   return jiffies;
 }
 
@@ -191,6 +201,7 @@ string LinuxParser::Command(int pid) {
   string line{};
   std::ifstream filestream(kProcDirectory + std::to_string(pid) + kCmdlineFilename);
   if(filestream.is_open()) {std::getline(filestream, line); }
+  filestream.close();
   return line; 
 }
 
@@ -208,6 +219,7 @@ string LinuxParser::Ram(int pid) {
       if(key == "VmSize:") {return value;}
     }
   }
+  filestream.close();
   return value; 
 }
 
@@ -225,6 +237,7 @@ string LinuxParser::Uid(int pid) {
       if(key == "Uid:") {return value;}
     }
   }
+  filestream.close();
   return value; 
 }
 
@@ -244,6 +257,7 @@ string LinuxParser::User(int pid) {
       if (s_pid == Uid(pid)) { return user; }
     }
   }
+  filestream.close();
   return user;
 }
 
@@ -260,5 +274,6 @@ long LinuxParser::UpTime(int pid) {
     for (int i = 1; i<=22; ++i){ linestream >> s_value;}
     value = std::stol(s_value)/sysconf(_SC_CLK_TCK);
   }
+  filestream.close();
   return value; 
 }
